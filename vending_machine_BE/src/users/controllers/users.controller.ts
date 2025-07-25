@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Put,
   Delete,
   Body,
@@ -11,7 +10,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { UsersService } from '@users/services/users.service';
-import { CreateUserDto, UpdateUserDto, UserResponseDto } from '@users/dto';
+import { UpdateUserDto, UserResponseDto } from '@users/dto';
 import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@auth/guards/roles.guard';
 import { Roles } from '@auth/decorators/roles.decorator';
@@ -29,7 +28,9 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<UserResponseDto> {
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<UserResponseDto> {
     return this.usersService.findOne(id);
   }
 

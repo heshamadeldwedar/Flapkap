@@ -6,9 +6,12 @@ import {
 import * as bcrypt from 'bcrypt';
 import { UserRepository, RoleRepository } from '@users/repositories';
 import { RegisterDto } from '@auth/dto';
-import { CreateUserDto, UpdateUserDto, UserResponseDto } from '@users/dto';
+import { UpdateUserDto, UserResponseDto } from '@users/dto';
 import { User } from '@database/models/user.model';
-import { UserCreationAttributes, UserUpdateAttributes } from '@users/interfaces/user.interface';
+import {
+  UserCreationAttributes,
+  UserUpdateAttributes,
+} from '@users/interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
@@ -76,7 +79,7 @@ export class UsersService {
 
   async findAll(): Promise<UserResponseDto[]> {
     const users = await this.userRepository.findAll();
-    return users.map(user => ({
+    return users.map((user) => ({
       id: user.id,
       email: user.email,
       role_id: user.role_id,
@@ -86,7 +89,10 @@ export class UsersService {
     }));
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
+  async update(
+    id: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserResponseDto> {
     const user = await this.userRepository.findById(id);
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
@@ -94,7 +100,9 @@ export class UsersService {
 
     // Check if email is being updated and if it conflicts
     if (updateUserDto.email && updateUserDto.email !== user.email) {
-      const existingUser = await this.userRepository.existsByEmail(updateUserDto.email);
+      const existingUser = await this.userRepository.existsByEmail(
+        updateUserDto.email,
+      );
       if (existingUser) {
         throw new ConflictException('User with this email already exists');
       }
@@ -102,7 +110,9 @@ export class UsersService {
 
     // Check if role exists
     if (updateUserDto.role_id) {
-      const roleExists = await this.roleRepository.existsById(updateUserDto.role_id);
+      const roleExists = await this.roleRepository.existsById(
+        updateUserDto.role_id,
+      );
       if (!roleExists) {
         throw new NotFoundException(`Role ${updateUserDto.role_id} not found`);
       }
@@ -112,7 +122,10 @@ export class UsersService {
     const updateData: UserUpdateAttributes = { ...updateUserDto };
     if (updateUserDto.password) {
       const saltRounds = 10;
-      updateData.password = await bcrypt.hash(updateUserDto.password, saltRounds);
+      updateData.password = await bcrypt.hash(
+        updateUserDto.password,
+        saltRounds,
+      );
     }
 
     await this.userRepository.update(id, updateData);
@@ -128,7 +141,10 @@ export class UsersService {
     await this.userRepository.delete(id);
   }
 
-  async validatePassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
+  async validatePassword(
+    plainPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
     return bcrypt.compare(plainPassword, hashedPassword);
   }
 }

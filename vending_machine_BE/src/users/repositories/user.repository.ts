@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '@database/models/user.model';
 import { Role } from '@database/models/role.model';
-import { UserCreationAttributes, UserUpdateAttributes } from '@users/interfaces/user.interface';
+import {
+  UserCreationAttributes,
+  UserUpdateAttributes,
+} from '@users/interfaces/user.interface';
 
 @Injectable()
 export class UserRepository {
@@ -38,7 +41,10 @@ export class UserRepository {
     });
   }
 
-  async update(id: number, userData: UserUpdateAttributes): Promise<[number, User[]]> {
+  async update(
+    id: number,
+    userData: UserUpdateAttributes,
+  ): Promise<[number, User[]]> {
     return this.userModel.update(userData, {
       where: { id },
       returning: true,

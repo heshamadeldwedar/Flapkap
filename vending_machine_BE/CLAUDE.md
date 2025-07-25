@@ -112,7 +112,7 @@ The system uses JWT-based authentication with role-based access control:
 
 ### Project Structure
 
-The project follows a **layered architecture** with domain-driven design:
+The project follows a **layered architecture** with domain-driven design and TypeScript path aliases:
 
 ```
 src/
@@ -124,7 +124,8 @@ src/
 │   ├── dto/                # Data transfer objects
 │   ├── guards/             # JWT and role guards
 │   ├── strategies/         # JWT passport strategy
-│   └── decorators/         # Role decorator
+│   ├── decorators/         # Role decorator
+│   └── auth.module.ts      # Auth module configuration
 ├── users/                   # User management domain
 │   ├── controllers/        # User HTTP controllers
 │   │   └── users.controller.ts
@@ -134,12 +135,34 @@ src/
 │   │   ├── user.repository.ts
 │   │   └── role.repository.ts
 │   ├── dto/                # User DTOs
-│   └── interfaces/         # User interfaces
+│   ├── interfaces/         # User interfaces
+│   └── users.module.ts     # Users module configuration
 ├── database/               # Database configuration
 │   ├── models/             # Sequelize models
 │   ├── migrations/         # Database migrations
 │   └── config.js           # Database configuration
+├── app.module.ts           # Root application module
 └── main.ts                 # Application entry point
+```
+
+### TypeScript Path Aliases
+
+The project uses path aliases for clean imports:
+
+```typescript
+// Path aliases configured in tsconfig.json
+{
+  "@/*": ["src/*"],
+  "@auth/*": ["src/auth/*"],
+  "@users/*": ["src/users/*"],
+  "@database/*": ["src/database/*"],
+  "@shared/*": ["src/shared/*"]
+}
+
+// Example usage:
+import { UsersService } from '@users/services/users.service';
+import { User } from '@database/models/user.model';
+import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
 ```
 
 ### Architecture Layers

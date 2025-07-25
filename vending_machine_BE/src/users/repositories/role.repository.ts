@@ -23,7 +23,10 @@ export class RoleRepository {
     return this.roleModel.findAll();
   }
 
-  async create(roleData: { name: string; description?: string }): Promise<Role> {
+  async create(roleData: {
+    name: string;
+    description?: string;
+  }): Promise<Role> {
     return this.roleModel.create(roleData);
   }
 
